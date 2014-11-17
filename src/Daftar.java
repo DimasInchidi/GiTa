@@ -23,7 +23,6 @@ public class Daftar implements CommandListener {
     private Alert a;
     private GiTa gita;
     private TextField tfUser, tfPass, tfPass2, tfHP, tfEmail;
-    private TextField[] tf = {tfUser, tfPass, tfPass2, tfHP, tfEmail};
 
     Daftar(GiTa gita) {
         this.gita = gita;
@@ -52,27 +51,22 @@ public class Daftar implements CommandListener {
             Display.getDisplay(gita).setCurrent(gita.masuK.masuk);
         } else if (data.equals(cDaftar.getLabel())) {
             int lanjut = 1;
-            for (int i = 0; i < tf.length; i++) {
-                if (tf[i] == null || tf[i].getString().equals("")) {
+                if (( tfUser.getString() == null || tfPass.getString() == null || tfPass2.getString() == null || tfHP.getString() == null || tfEmail.getString() == null
+||
+tfUser.getString().equals("") ||  tfPass.getString().equals("") ||  tfPass2.getString().equals("")  || tfHP.getString().equals("") ||  tfEmail.getString().equals("") )) {
                     lanjut = 0;
                 }
-            }
-            if (tfPass.getString().equals(tfPass2.getString())) {
+            if (!tfPass.getString().equals(tfPass2.getString())) {
                 lanjut = 0;
+                System.out.println("gag sama");
             }
             if (lanjut == 1) {
-                gita.POST = "user="+tfUser.getString()+"&pass="+tfPass.getString()+
+                String what = "user="+tfUser.getString()+"&pass="+tfPass.getString()+
                         "hp="+tfHP.getString()+"&email="+tfEmail.getString();
-                gita.tritNo = 1;
-                gita.trit[gita.tritNo].start();
-                if(gita.UserLogin == null){
-            daftar.append("Data yang anda masukan salah atau sudah ada\n"
-                    + "restart aplikasi untuk mencegah brute force");
-        }
+                gita.setPOSTnTrit(what, 1);
+                gita.TambahUser();
             } else {
-                System.err.println("form belum diisi");
-                a = new Alert("Kesalahan", "Terdapat form yang belum terisi dengan benar", null, AlertType.ERROR);
-                a.setTimeout(Alert.FOREVER);
+                daftar.append("Form belum diisi dengan benar");
             }
         }
     }

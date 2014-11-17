@@ -31,10 +31,6 @@ public class Agenda implements CommandListener, ItemCommandListener {
         cAgendaBaru = new Command("Agenda Baru", Command.OK, 3);
         cCari = new Command("Cari Teman", Command.OK, 4);
         cKeluar = new Command("Logout", Command.CANCEL, 2);
-        iCari = new StringItem(null, "GiTa tidak menyenangkan tanpa teman :(", Item.BUTTON);
-        iCari.setDefaultCommand(cCari);
-        iCari.setItemCommandListener(this);
-        agenda.append(iCari);
         //daftar button
         agenda.addCommand(cKeluar);
         agenda.setCommandListener(this);
@@ -50,18 +46,18 @@ public class Agenda implements CommandListener, ItemCommandListener {
         }
     }
 
-    public void lihatAgenda(String User) {
-        System.out.println("___>" + User + "<___");
-        try {
-            System.out.println("___>" +gita.POST);
-            gita.POST = "user=" + User;
-            gita.tritNo = 2;
-            gita.trit[gita.tritNo].start();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+    public void commandAction(Command c, Item item) {
     }
 
-    public void commandAction(Command c, Item item) {
+    void DataBeranda(String Pesan) {
+        if(Pesan.equals("")||Pesan ==null) {
+        iCari = new StringItem(null, "GiTa tidak menyenangkan tanpa teman :(", Item.BUTTON);
+        iCari.setDefaultCommand(cCari);
+        iCari.setItemCommandListener(this);
+        agenda.append(iCari);
+        }
+        else {
+            this.agenda.append(Pesan);
+        }
     }
 }

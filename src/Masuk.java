@@ -27,9 +27,9 @@ public class Masuk implements ItemCommandListener {
         cLogin = new Command("Login", Command.SCREEN, 1);
         cDaftar = new Command("Daftar", Command.SCREEN, 2);
         cKeluar = new Command("Keluar", Command.SCREEN, 3);
-        tfUser = new TextField("Username : ", "inchidi", 32, TextField.ANY);
+        tfUser = new TextField("Username : ", "", 32, TextField.ANY);
         masuk.append(tfUser);
-        tfPass = new TextField("Password : ", "auntmay", 32, TextField.PASSWORD);
+        tfPass = new TextField("Password : ", "", 32, TextField.PASSWORD);
         masuk.append(tfPass);
         cg.append("Simpan Password",null);
         masuk.append(cg);
@@ -49,7 +49,6 @@ public class Masuk implements ItemCommandListener {
         iKeluar.setDefaultCommand(cKeluar);
         iKeluar.setItemCommandListener(this);
         masuk.append(iKeluar);
-        System.out.println("done");
     }
 
     public void commandAction(Command c, Item item) {
