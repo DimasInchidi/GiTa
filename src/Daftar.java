@@ -9,16 +9,13 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextField;
 
 //nama file: Daftar.java
-
 /**
- * @author Inchidi
- * Contact :
- *      Email Inchidi@yahoo.com 
- *      Twitter @DimasInchidi
+ * @author Inchidi Contact : Email Inchidi@yahoo.com Twitter
+ * @DimasInchidi
  */
 public class Daftar implements CommandListener {
 
-   public Form daftar =new Form("Bergabung dengan kami!");
+    public Form daftar = new Form("Bergabung dengan kami!");
     private Command cKeluar, cDaftar;
     private Alert a;
     private GiTa gita;
@@ -51,20 +48,20 @@ public class Daftar implements CommandListener {
             Display.getDisplay(gita).setCurrent(gita.masuK.masuk);
         } else if (data.equals(cDaftar.getLabel())) {
             int lanjut = 1;
-                if (( tfUser.getString() == null || tfPass.getString() == null || tfPass2.getString() == null || tfHP.getString() == null || tfEmail.getString() == null
-||
-tfUser.getString().equals("") ||  tfPass.getString().equals("") ||  tfPass2.getString().equals("")  || tfHP.getString().equals("") ||  tfEmail.getString().equals("") )) {
-                    lanjut = 0;
-                }
-            if (!tfPass.getString().equals(tfPass2.getString())) {
+            if ((tfUser.getString() == null || tfPass.getString() == null || tfPass2.getString() == null || tfHP.getString() == null || tfEmail.getString() == null
+                    || tfUser.getString().equals("") || tfPass.getString().equals("") || tfPass2.getString().equals("") || tfHP.getString().equals("") || tfEmail.getString().equals(""))) {
                 lanjut = 0;
-                System.out.println("gag sama");
+                
+             daftar.append("Semua harus diisi");
+            } else if (!tfPass.getString().equals(tfPass2.getString())) {
+                lanjut = 0;
+                
+             daftar.append("Password Berbeda");
             }
             if (lanjut == 1) {
-                String what = "user="+tfUser.getString()+"&pass="+tfPass.getString()+
-                        "hp="+tfHP.getString()+"&email="+tfEmail.getString();
-                gita.setPOSTnTrit(what, 1);
-                gita.TambahUser();
+                String what = "user=" + tfUser.getString() + "&pass=" + tfPass.getString()
+                        + "&hp=" + tfHP.getString() + "&email=" + tfEmail.getString();
+                gita.Lakukan(what, 1);
             } else {
                 daftar.append("Form belum diisi dengan benar");
             }

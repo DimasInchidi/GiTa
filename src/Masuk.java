@@ -72,8 +72,8 @@ public class Masuk implements ItemCommandListener {
     private void cActLogin() {
         gita.POST = "myusername="+tfUser.getString()+"&mypassword="+tfPass.getString();
         gita.tritNo = 0;
-        gita.trit[gita.tritNo].setPriority(3);
-        gita.trit[gita.tritNo].start();
+        gita.treat().setPriority(3);
+        gita.treat().start();
         if(gita.UserLogin == null){
             masuk.append("Username atau Password Salah\n"
                     + "restart aplikasi untuk mencegah brute force");

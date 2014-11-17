@@ -20,7 +20,7 @@ public class GiTa extends MIDlet {
     Form frMasuk, frDaftar, frAgenda, frTambah, frCari = new Form("");
     private String ServerURL = "http://127.0.0.1/GiTaServer/";
     private Thread Login, Daftar, Update, Beranda, Pemberitahuan, Follow, Favorit, Cari;
-    private String[] phpURL = {"Login.php?", "Daftar.php?", "LihatAgenda.php?", "Beranda.php?", "Pemberitahuan.php?", "Follow.php?", "Favorit.php?", "Cari.php?"};
+    private String[] phpURL = {"Login.php?", "Daftar.php?", "LihatAgenda.php?", "TambahAgenda.php?", "Pemberitahuan.php?", "Follow.php?", "Favorit.php?", "Cari.php?"};
     private StringBuffer pesan = new StringBuffer();
     private Display display;
     Masuk masuK;
@@ -42,19 +42,63 @@ public class GiTa extends MIDlet {
         frCari = carI.cari;
         frTambah = tambaH.tambah;
         frAgenda = agendA.agenda;
-        this.trit[tritNo] = new Thread(new Runnable() {
+        
+    }
+
+    public void startApp() {
+        Display.getDisplay(this).setCurrent(this.frMasuk);
+    }
+
+    public void pauseApp() {
+    }
+
+    public void destroyApp(boolean unconditional) {
+    }
+
+    public void Exit() {
+        destroyApp(false);
+        notifyDestroyed();
+    }
+
+    void setPOSTnTrit(String post, int i) {
+        this.POST = post;
+        this.tritNo = i;
+    }
+
+    private void berhasilLogin() {
+        Display.getDisplay(this).setCurrent(frAgenda);
+        try {
+            setPOSTnTrit("user=" + UserLogin, 2);
+            this.treat().start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void Lakukan(String s, int i) {
+        try {
+            setPOSTnTrit(s, i);
+            System.out.println(treat());
+            this.treat().start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    Thread treat(){
+        return this.trit[tritNo] = new Thread(new Runnable() {
             private volatile boolean isRunning = true;
 
             public void run() {
-                int i =0;
+                int i = 0;
                 int wew = -1;
-                while (isRunning && i<5 ) {
+                while (isRunning && i < 5) {
                     try {
                         String url = ServerURL + phpURL[tritNo];
                         HttpConnection httpConn = null;
                         InputStream is = null;
                         OutputStream os = null;
-    pesan = new StringBuffer();
+                        pesan = new StringBuffer();
                         System.err.println("loaded " + tritNo);
                         try {
                             httpConn = (HttpConnection) Connector.open(url);
@@ -66,7 +110,7 @@ public class GiTa extends MIDlet {
                             httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                             os = httpConn.openOutputStream();
                             String params;
-                            System.err.println(url+POST);
+                            System.err.println(url + POST);
 
                             params = POST;
                             os.write(params.getBytes());
@@ -76,7 +120,7 @@ public class GiTa extends MIDlet {
                             while ((chr = is.read()) != -1) {
                                 pesan.append((char) chr);
                             }
-                         } catch (IOException e) {
+                        } catch (IOException e) {
                             System.out.println(e.getMessage());
                         } finally {
                             try {
@@ -104,36 +148,85 @@ public class GiTa extends MIDlet {
                                 }
                                 break;
                             case 1:
+                                try{
+                                System.out.println("Terdaftar>>"+pesan.toString());
                                 UserLogin = pesan.toString().substring(0, pesan.toString().indexOf("<br>"));
                                 if (pesan != null || !pesan.toString().equals("")) {
                                     berhasilLogin();
                                 }
+                                } catch (Exception ex) {
+                                    daftaR.daftar.append("data anda sudah ada");
+                                }
                                 break;
                             case 2:
-                                try{
-                                String dl = pesan.toString();
-                                String Pesan = "";
-                                while (dl.length() > 5 && wew == -1) {
-                                    int batas = dl.indexOf("<br>");
-                                    Pesan = dl.substring(0, batas);
-                                    dl = dl.substring(batas + 4, dl.length());
-                                    batas = dl.indexOf("<br>");
-                                    Pesan = Pesan + dl.substring(0, batas)+" ";
-                                    dl = dl.substring(batas + 4, dl.length());
-                                    batas = dl.indexOf("<br>");
-                                    Pesan = Pesan + "\n" + dl.substring(0, batas);
-                                    dl = dl.substring(batas + 4, dl.length());
-                                    batas = dl.indexOf("<br>");
-                                    Pesan = Pesan + " di " + dl.substring(0, batas);
-                                    dl = dl.substring(batas + 4, dl.length());
+                                try {
+                                    String dl = pesan.toString();
+                                    String Pesan = "";
+                                    while (dl.length() > 5 && wew == -1) {
+                                        int batas = dl.indexOf("<br>");
+                                        Pesan = dl.substring(0, batas);
+                                        dl = dl.substring(batas + 4, dl.length());
+                                        batas = dl.indexOf("<br>");
+                                        Pesan = Pesan + dl.substring(0, batas) + " ";
+                                        dl = dl.substring(batas + 4, dl.length());
+                                        batas = dl.indexOf("<br>");
+                                        Pesan = Pesan + "\n" + dl.substring(0, batas);
+                                        dl = dl.substring(batas + 4, dl.length());
+                                        batas = dl.indexOf("<br>");
+                                        Pesan = Pesan + " di " + dl.substring(0, batas);
+                                        dl = dl.substring(batas + 4, dl.length());
+                                        agendA.DataBeranda(Pesan);
+                                        System.out.println(Pesan);
+                                    }
+                                    wew = i;
+
+                                } catch (Exception e) {
+                                    e.getMessage();
+                                    String Pesan = "";
                                     agendA.DataBeranda(Pesan);
-                                System.out.println(Pesan);
                                 }
-                                wew= i;
+                                break;
+                                case 3:
+                                try{
+                                    System.out.print(pesan.toString());
+                                    if(pesan.toString().substring(0, pesan.toString().indexOf("<br>")).equals(UserLogin)){
+                                        
+                                gita.berhasilLogin();
+                                    } else {tambaH.ErrTambah();}
                                 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                                } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                break;
+                                    case 5:
+                                     try{
+                                    System.out.print(pesan.toString());
+                                    if(pesan.toString().substring(0, pesan.toString().indexOf("<br>")).equals(UserLogin)){
+                                        
+                                    berhasilLogin();
+                                    } else {carI.errikut();}
+                                } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                break;
+                            case 7:
+                                try {
+                                    String dl = pesan.toString();
+                                    System.out.println("Tercari>>>"+dl);
+                                    String Pesan = "";
+                                    while (dl.length() > 5 && wew == -1) {
+                                        int batas = dl.indexOf("<br>");
+                                        Pesan = dl.substring(0, batas);
+                                        dl = dl.substring(batas + 4, dl.length());
+                                        carI.Tampilkan(Pesan);
+                                        System.out.println(Pesan);
+                                    }
+                                    wew = i;
+
+                                } catch (Exception e) {
+                                    String Pesan = "";
+                                    carI.Tampilkan(Pesan);
+                                }  
                                 break;
                             default:
                                 Display.getDisplay(gita).setCurrent(gita.masuK.masuk);
@@ -144,56 +237,13 @@ public class GiTa extends MIDlet {
                     } catch (IOException ex) {
                     }
                     i++;
+                    kill();
                 }
-                System.err.println("kata melky link starto");
-                kill();
             }
 
             public void kill() {
                 isRunning = false;
             }
         });
-    }
-
-    public void startApp() {
-        Display.getDisplay(this).setCurrent(this.frMasuk);
-    }
-
-    public void pauseApp() {
-    }
-
-    public void destroyApp(boolean unconditional) {
-    }
-
-    public void Exit() {
-        destroyApp(false);
-        notifyDestroyed();
-    }
-
-    void setPOSTnTrit(String post, int i) {
-        this.POST = post;
-        this.tritNo = i;
-    }
-
-    private void berhasilLogin() {
-        Display.getDisplay(this).setCurrent(frAgenda);
-        try {
-            setPOSTnTrit("user=" + UserLogin, 2);
-            this.trit[tritNo].start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    void TambahUser() {
-        try {
-            
-        trit[tritNo].start();
-                if(gita.UserLogin == null){
-            daftaR.daftar.append("Data yang anda masukan salah atau sudah ada");
-        }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
